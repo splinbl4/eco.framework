@@ -1,0 +1,7 @@
+Установка пакета "roave/security-advisories" для защиты от небезапасных пакетов.
+Настройка автозагрузки классов черех composer согласно psr-4
+Установка и настройка "phpunit/phpunit"
+Установка пакетов "zendframework/zend-diactoros", "zendframework/zend-httphandlerrunner" для работы с HTTP
+Установка и настройка "aura/router" для маршрутизации
+Написание тестовых маршрутов
+Написание адаптера для своего роута
