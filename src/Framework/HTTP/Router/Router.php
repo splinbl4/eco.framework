@@ -1,9 +1,9 @@
 <?php
 
-namespace Framework\HTTP\Router;
+namespace Framework\Http\Router;
 
-use Framework\HTTP\Router\Exception\RequestNotMatchedException;
-use Framework\HTTP\Router\Exception\RouteNotFoundException;
+use Framework\Http\Router\Exception\RequestNotMatchedException;
+use Framework\Http\Router\Exception\RouteNotFoundException;
 use Psr\Http\Message\ServerRequestInterface;
 
 interface Router

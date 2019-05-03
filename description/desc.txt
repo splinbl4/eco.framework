@@ -5,3 +5,8 @@
 Установка и настройка "aura/router" для маршрутизации
 Написание тестовых маршрутов
 Написание адаптера для своего роута
+Установка пакетов для Middleware и Pipeline
+Написание Middleware и Pipeline
+Установка пакетов "psr/container", "zendframework/zend-config-aggregator", "zendframework/zend-httphandlerrunner"
+для конфигурации приложения и для контейнера зависимостей.
+Настройка конфигурации приложения. Все локальные настройку берутся из *.local.php и local.php
