@@ -33,8 +33,7 @@ return [
                     $environment->addExtension(new Twig\Extension\DebugExtension());
                 }
 
-                $environment->addExtension($container->get(RouteExtension::class));
-
+                //Подключение собственных расширений
                 foreach ($config['extensions'] as $extension) {
                     $environment->addExtension($container->get($extension));
                 }
@@ -51,6 +50,8 @@ return [
     'twig' => [
         'template_dir' => 'templates',
         'cache_dir' => 'var/cache/twig',
-        'extensions' => [],
+        'extensions' => [
+            RouteExtension::class
+        ],
     ],
 ];

@@ -30,8 +30,8 @@ return [
             },
             ErrorHandlerMiddleware::class => function (ContainerInterface $container) {
                 return new ErrorHandlerMiddleware(
-                    $container->get('config')['debug']
-//                    $container->get(TemplateRenderer::class)
+                    $container->get('config')['debug'],
+                    $container->get(TemplateRenderer::class)
                 );
             },
         ],

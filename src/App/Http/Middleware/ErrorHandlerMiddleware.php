@@ -2,23 +2,22 @@
 
 namespace App\Http\Middleware;
 
-//use Framework\Template\TemplateRenderer;
+use Framework\Template\TemplateRenderer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Diactoros\Response\HtmlResponse;
-use Zend\Diactoros\Response\JsonResponse;
 
 class ErrorHandlerMiddleware implements MiddlewareInterface
 {
     private $debug;
-//    private $template;
+    private $template;
 
-    public function __construct(bool $debug/*, TemplateRenderer $template*/)
+    public function __construct(bool $debug, TemplateRenderer $template)
     {
         $this->debug = $debug;
-//        $this->template = $template;
+        $this->template = $template;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -27,12 +26,10 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         } catch (\Throwable $e) {
             $view = $this->debug ? 'error/error-debug' : 'error/error';
-            return new JsonResponse(
-                [
+            return new HtmlResponse($this->template->render($view, [
                 'request' => $request,
                 'exception' => $e,
-                ],
-                self::getStatusCode($e));
+            ]), self::getStatusCode($e));
         }
     }
 
