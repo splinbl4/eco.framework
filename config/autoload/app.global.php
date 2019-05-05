@@ -1,16 +1,10 @@
 <?php
 
-use App\Http\Middleware;
-use Infrastructure\Framework\Http\Middleware\ErrorHandler\PrettyErrorResponseGenerator;
+use Framework\Http\Middleware\ErrorHandler\ErrorResponseGenerator;
 use Framework\Http\Application;
 use Framework\Http\Middleware\ErrorHandler\ErrorHandlerMiddleware;
-use Framework\Http\Middleware\ErrorHandler\WhoopsErrorResponseGenerator;
 use Framework\Http\Pipeline\MiddlewareResolver;
-use Framework\Http\Router\AuraRouterAdapter;
 use Framework\Http\Router\Router;
-use Framework\Template\TemplateRenderer;
-use Framework\Http\Middleware\ErrorHandler\ErrorResponseGenerator;
-use Psr\Container\ContainerInterface;
 
 return [
     'dependencies' => [
@@ -18,51 +12,14 @@ return [
             Zend\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory::class,
         ],
         'factories' => [
-            Application::class => function (ContainerInterface $container) {
-                return new Application(
-                    $container->get(MiddlewareResolver::class),
-                    $container->get(Router::class),
-                    $container->get(Middleware\NotFoundHandler::class)
-                );
-            },
-            Router::class => function () {
-                return new AuraRouterAdapter(new Aura\Router\RouterContainer());
-            },
-            MiddlewareResolver::class => function (ContainerInterface $container) {
-                return new MiddlewareResolver($container, new Zend\Diactoros\Response());
-            },
-            ErrorHandlerMiddleware::class => function (ContainerInterface $container) {
-                return new ErrorHandlerMiddleware(
-                    $container->get(ErrorResponseGenerator::class)
-                );
-            },
-            ErrorResponseGenerator::class => function (ContainerInterface $container) {
-                if ($container->get('config')['debug']) {
-                    return new WhoopsErrorResponseGenerator(
-                        $container->get(Whoops\RunInterface::class),
-                        new Zend\Diactoros\Response()
-                    );
-                }
-                return new PrettyErrorResponseGenerator(
-                    $container->get(TemplateRenderer::class),
-                    new Zend\Diactoros\Response(),
-                    [
-                        '403' => 'error/403',
-                        '404' => 'error/404',
-                        'error' => 'error/error',
-                    ]
-                );
-            },
-            Whoops\RunInterface::class => function () {
-                $whoops = new Whoops\Run();
-                $whoops->writeToOutput(false);
-                $whoops->allowQuit(false);
-                $whoops->pushHandler(new Whoops\Handler\PrettyPageHandler());
-                $whoops->register();
-                return $whoops;
-            },
+            Application::class => Infrastructure\Framework\Http\ApplicationFactory::class,
+            Router::class => Infrastructure\Framework\Http\Router\AuraRouterFactory::class,
+            MiddlewareResolver::class => Infrastructure\Framework\Http\Pipeline\MiddlewareResolverFactory::class,
+            ErrorHandlerMiddleware::class => Infrastructure\Framework\Http\Middleware\ErrorHandler\ErrorHandlerMiddlewareFactory::class,
+            ErrorResponseGenerator::class => Infrastructure\Framework\Http\Middleware\ErrorHandler\PrettyErrorResponseGeneratorFactory::class,
+            Psr\Log\LoggerInterface::class => Infrastructure\App\Logger\LoggerFactory::class,
         ],
     ],
 
-    'debug' => true,
+    'debug' => false,
 ];

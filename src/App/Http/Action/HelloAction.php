@@ -7,6 +7,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Diactoros\Response\HtmlResponse;
+use Zend\Stdlib\Exception\LogicException;
 
 class HelloAction implements RequestHandlerInterface
 {
