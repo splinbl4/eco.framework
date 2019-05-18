@@ -11,6 +11,7 @@
     "psr/http-server-handler": "^1.0",
     "psr/http-server-middleware": "^1.0",
     "psr/log": "^1.1",
+    "symfony/console": "^4.2",
     "twig/twig": "^2.9",
     "zendframework/zend-config-aggregator": "^1.1",
     "zendframework/zend-diactoros": "^2.1",
@@ -35,6 +36,7 @@
   "scripts": {
     "test": "phpunit --colors=always",
     "cs-check": "phpcs",
-    "cs-fix": "phpcbf"
+    "cs-fix": "phpcbf",
+    "app": "php bin/app.php --ansi"
   }
 }
