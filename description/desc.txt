@@ -26,3 +26,9 @@
 Проверка и исправления кодстайла с помощью codesniffer
 Установка пакета symfony/console
 Настройка symfony/console
+Установка пакета fzaninotto/faker для генерации тестовых данных
+Установка пакета dasprid/container-interop-doctrine для подключения doctrine через psr контейнер. В пакете уже создана
+фабрика подключения.
+Установка пакета doctrine/migrations
+Установка пакета doctrine/data-fixtures для добавления тестлвых данных в бд
+Установка пакета symfony/validator
