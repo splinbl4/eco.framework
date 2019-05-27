@@ -1,0 +1,14 @@
+App\Entity\Game:
+  properties:
+    sizeField:
+      - NotBlank:
+          message: "Это поле не должно быть пустым."
+      - Range:
+          min: 5
+          minMessage: "Размерность поля не должна быть меньше 5"
+    duration:
+      - NotBlank:
+          message: "Это поле не должно быть пустым."
+      - Range:
+          min: 1
+          minMessage: "Длительность наблюдения не должно быть меньше 1"

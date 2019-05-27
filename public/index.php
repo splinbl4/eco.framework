@@ -1,10 +1,8 @@
 <?php
 
-use App\Http\Action\AboutAction;
-use App\Http\Action\HelloAction;
 use Framework\Http\Application;
-use Zend\Diactoros\ServerRequestFactory;
 use Zend\HttpHandlerRunner\Emitter\SapiEmitter;
+use Zend\Diactoros\ServerRequestFactory;
 
 /**
  * @var \Psr\Container\ContainerInterface $container
@@ -18,9 +16,7 @@ $container = require 'config/container.php';
 $app = $container->get(Application::class);
 
 require 'config/pipeline.php';
-//require 'config/routes.php';
-$app->get('home', '/', HelloAction::class);
-$app->get('about', '/about', AboutAction::class);
+require 'config/routes.php';
 
 $request = ServerRequestFactory::fromGlobals();
 $response = $app->handle($request);

@@ -8,9 +8,33 @@
 
 {% block content %}
     <div class="jumbotron">
-        <h1>Hello!</h1>
-        <p>
-            Congratulations! You have successfully created your application.
-        </p>
+        <h1>Привет!</h1>
+
+    {% if messages is defined %}
+        {% for message in messages %}
+            {% for error in message %}
+
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+
+
+        <form method="post" action="{{ path('create_result') }}">
+            <div class="form-group">
+                <label for="sizeField">Размерность поля*</label>
+                <input type="text" name="sizeField" class="form-control" id="exampleInputEmail1">
+                <small id="emailHelp" class="form-text text-muted">Размерность поля не должна быть меньше 5</small>
+            </div>
+            <div class="form-group">
+                <label for="duration">Длительность наблюдения*</label>
+                <input type="text" name="duration" class="form-control" id="exampleInputPassword1">
+                <small id="emailHelp" class="form-text text-muted">Длительность наблюдения не должно быть меньше 1</small>
+            </div>
+            <button type="submit" class="btn btn-primary">Начать</button>
+        </form>
     </div>
 {% endblock %}
