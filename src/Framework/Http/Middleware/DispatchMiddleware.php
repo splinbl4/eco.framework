@@ -25,7 +25,6 @@ class DispatchMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
         $middleware = $this->resolver->resolve($result->getHandler());
-
         return $middleware->process($request, $handler);
     }
 }

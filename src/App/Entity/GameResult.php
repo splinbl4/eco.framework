@@ -2,11 +2,12 @@
 
 namespace App\Entity;
 
-use App\Service\GameResult\GameResultService;
+use App\Service\Game\GameResultService;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\GameResultRepository")
+ * @ORM\Entity
+ * @ORM\Table(name="game_results")
  */
 class GameResult
 {
@@ -14,36 +15,36 @@ class GameResult
      * @var int
      *
      * @ORM\Id()
-     * @ORM\GeneratedValue()
+     * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
      * @var int
-     *
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="step")
      */
     private $step;
 
     /**
      * @var string
      *
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(type="string", nullable=true, name="message")
      */
     private $message = '';
 
     /**
      * @var array
      *
-     * @ORM\Column(type="array", nullable=true)
+     * @ORM\Column(type="array", nullable=true, name="fields")
      */
     private $fields = [];
 
     /**
      * @var Game
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Game")
+     * @ORM\ManyToOne(targetEntity="Game", inversedBy="game_results")
+     * @ORM\JoinColumn(name="game_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      */
     protected $game;
 

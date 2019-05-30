@@ -4,7 +4,6 @@ namespace App\Service\Game;
 
 use App\Entity\GameResult;
 use Doctrine\ORM\EntityManagerInterface;
-use Psr\Container\ContainerInterface;
 
 class GameResultService
 {

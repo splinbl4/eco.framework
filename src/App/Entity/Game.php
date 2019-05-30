@@ -2,10 +2,12 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\GameRepository")
+ * @ORM\Entity
+ * @ORM\Table(name="games")
  */
 class Game
 {
@@ -13,7 +15,7 @@ class Game
      * @var int
      *
      * @ORM\Id()
-     * @ORM\GeneratedValue()
+     * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
      */
     private $id;
@@ -21,16 +23,27 @@ class Game
     /**
      * @var int
      *
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="size_field")
      */
     private $sizeField;
 
     /**
      * @var int
      *
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="duration")
      */
     private $duration;
+
+    /**
+     * @var ArrayCollection|GameResult[]
+     * @ORM\OneToMany(targetEntity="GameResult", mappedBy="game", orphanRemoval=true, cascade={"persist"})
+     */
+    private $gameResults;
+
+    public function __construct()
+    {
+        $this->gameResults = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -60,4 +73,13 @@ class Game
 
         return $this;
     }
+
+    /**
+     * @return GameResult[]
+     */
+    public function getGameResults(): array
+    {
+        return $this->gameResults->toArray();
+    }
+
 }

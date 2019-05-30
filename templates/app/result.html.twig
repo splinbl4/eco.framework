@@ -1,0 +1,25 @@
+{% extends 'layout/default.html.twig' %}
+
+{% block title %}Eco System{% endblock %}
+
+{% block content %}
+
+    <h1>Результаты игры №{{ game.id }}</h1>
+    {% for result in game.gameResults %}
+        <div class="jumbotron">
+        <h4>Step {{ result.step }}</h4>
+        {% if result.fields is empty %}
+            <p class="font-weight-bold">nothing has happened</p>
+        {% endif %}
+        {% for message, fields in result.fields %}
+            <p class="font-weight-bold">{{ message }}</p>
+            <ul>
+                {% for key, field in fields %}
+                 <li>{{ key }} - {{ field }}</li>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+        </div>
+    {% endfor %}
+
+{% endblock %}
