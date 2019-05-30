@@ -10,6 +10,7 @@ use App\Entity\Game;
 use App\Entity\Observer;
 use App\Entity\GameResult;
 use App\Entity\Plants\Plant;
+use App\UseCase\Collection\Collection;
 use App\UseCase\Collection\EcoCollection;
 use App\UseCase\Location;
 use Doctrine\ORM\EntityManagerInterface;
@@ -43,7 +44,7 @@ class GameService
 
     /**
      * Вся логика игры здесь
-     * 
+     *
      * @param EcoCollection $collection
      * @param Location $location
      * @param Game $game
@@ -62,53 +63,49 @@ class GameService
             $gameResult->setStep($count);
             $gameResult->setGame($game);
 
-            foreach ($collection as $current => &$item) {
-                if ($item->getIsEaten()) {
+            foreach ($collection as $current => &$currentEntity) {
+                if ($currentEntity->getIsEaten()) {
                     continue;
                 }
-                foreach ($collection as $offset => &$value) {
+                foreach ($collection as $offset => &$entity) {
                     if ($offset !== $current && $collection->isOverlay($current, $offset)) {
-                        if ($item instanceof Herbivore && $value instanceof Plant) {
-                            $item->animalService->eat($current, $offset, $collection, $this->logger, $gameResult);
+                        if ($currentEntity instanceof Herbivore && $entity instanceof Plant) {
+                            $currentEntity->animalService->eat($current, $offset, $collection, $this->logger, $gameResult);
                             $collection->add(new Plant($location, '$plants'));
                         }
 
-                        if (($item instanceof LargePredator || $item instanceof SimplePredator) && $value instanceof Animal) {
-                            if ($item->isStronger($value)) {
-                                $item->animalService->eat($current, $offset, $collection, $this->logger, $gameResult);
+                        if (($this->isPredator($currentEntity)) && $this->isAnimal($entity)) {
+                            if ($currentEntity->isStronger($entity)) {
+                                $currentEntity->animalService->eat($current, $offset, $collection, $this->logger, $gameResult);
                             }
 
-                            if ($item->isEqual($value)) {
-                                $item->ecoService->displacement();
-                                $value->ecoService->displacement();
-
-                                $this->logger->info($item->getName() . ' is equal ' . $value->getName());
-                                $gameResult->setFields($item->getName() . ' is equal ' . $value->getName());
+                            if ($currentEntity->isEqual($entity)) {
+                                $this->displacement($currentEntity, $entity, $gameResult);
                             }
                         }
 
-                        if ($item instanceof Observer) {
-                            if ($value instanceof Plant) {
-                                $item->observerService->take($current, $offset, $collection, $this->logger, $gameResult);
+                        if ($currentEntity instanceof Observer) {
+                            if ($entity instanceof Plant) {
+                                $currentEntity->observerService->take($current, $offset, $collection, $this->logger, $gameResult);
                             }
 
-                            if (!$value instanceof Observer && !$value instanceof Plant) {
+                            if (!$entity instanceof Observer && !$entity instanceof Plant) {
                                 $this->logger->info(
-                                    'Description of the observer №' . $item->getId(),
-                                    $value->getFields()
+                                    'Description of the observer №' . $currentEntity->getId(),
+                                    $entity->getFields()
                                 );
 
                                 $gameResult->setFields(
-                                    'Description of the observer №' . $item->getId(),
-                                    $value->getFields()
+                                    'Description of the observer №' . $currentEntity->getId(),
+                                    $entity->getFields()
                                 );
                             }
                         }
                     }
                 }
-                unset($value);
+                unset($entity);
             }
-            unset($item);
+            unset($currentEntity);
 
             $step = $collection->checkType(Herbivore::class);
             $durationObservation--;
@@ -122,5 +119,32 @@ class GameService
         }
 
         $this->logger->info('End');
+    }
+
+    private function isPredator($instance): bool
+    {
+        if ($instance instanceof LargePredator || $instance instanceof SimplePredator) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function isAnimal($entity): bool
+    {
+        if ($entity instanceof Animal) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function displacement($currentEntity, $entity, GameResult $gameResult): void
+    {
+        $currentEntity->ecoService->displacement();
+        $entity->ecoService->displacement();
+
+        $this->logger->info($currentEntity->getName() . ' is equal ' . $entity->getName());
+        $gameResult->setFields($currentEntity->getName() . ' is equal ' . $entity->getName());
     }
 }

@@ -8,7 +8,17 @@ use Psr\Log\LoggerInterface;
 
 class ObserverService
 {
-    public function take(int $current, int $offset, EcoCollection $collection, LoggerInterface $log, GameResult $response): void
+    /**
+     * Взаимодействие наблюдателя с растением, а также запись в логи и базу этого взаимодействия
+     *
+     * @param int $current
+     * @param int $offset
+     * @param EcoCollection $collection
+     * @param LoggerInterface $log
+     * @param GameResult $gameResult
+     * @throws \Exception
+     */
+    public function take(int $current, int $offset, EcoCollection $collection, LoggerInterface $log, GameResult $gameResult): void
     {
         if (!$collection->offsetExists($offset)) {
             throw new \Exception('Invalid offset');
@@ -19,7 +29,7 @@ class ObserverService
             $collection->offsetGet($offset)->getFields()
         );
 
-        $response->setFields(
+        $gameResult->setFields(
             'Observer № ' . $collection->offsetGet($current)->getId() . ' take ' . $collection->offsetGet($offset)->getName(),
             $collection->offsetGet($offset)->getFields()
         );

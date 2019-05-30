@@ -13,6 +13,12 @@ use App\UseCase\Location;
 
 class EcoCollection extends Collection
 {
+    /**
+     * Создание коллекции сущностей игры
+     *
+     * @param Location $location
+     * @return EcoCollection
+     */
     public static function createCollection(Location $location) :self
     {
         $ecoCollection = new self;
@@ -29,6 +35,13 @@ class EcoCollection extends Collection
         return $ecoCollection;
     }
 
+    /**
+     * Проверка на совпадение координат сущностей игры
+     *
+     * @param int $current
+     * @param int $offset
+     * @return bool
+     */
     public function isOverlay(int $current, int $offset) :bool
     {
         if ($this->offsetGet($offset) && $this->offsetGet($current)) {
@@ -44,6 +57,9 @@ class EcoCollection extends Collection
         return false;
     }
 
+    /**
+     * Перемещение сущности игры
+     */
     public function displacement() :void
     {
         foreach ($this->container as $item) {
@@ -52,6 +68,12 @@ class EcoCollection extends Collection
         }
     }
 
+    /**
+     * Проверка существования типа сущности игры в коллекции
+     *
+     * @param $type
+     * @return bool
+     */
     public function checkType($type) :bool
     {
         foreach ($this->container as $item) {

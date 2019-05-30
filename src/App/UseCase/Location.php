@@ -11,11 +11,22 @@ class Location
         $this->fieldSize = $fieldSize;
     }
 
+    /**
+     * Установить случайную координату для сущности игры
+     *
+     * @return int
+     */
     public function setCoordinate()
     {
         return rand(1, $this->fieldSize);
     }
 
+    /**
+     * Изменение координат сущности игры
+     *
+     * @param int $coord
+     * @return int|mixed
+     */
     public function displacement(int $coord)
     {
         $newCoord = array_rand([$coord--, $coord, $coord++], 1);

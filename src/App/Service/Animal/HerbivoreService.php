@@ -9,7 +9,17 @@ use Psr\Log\LoggerInterface;
 
 class HerbivoreService implements AnimalService
 {
-    public function eat(int $current, int $offset, EcoCollection $collection, LoggerInterface $log, GameResult $response): void
+    /**
+     * Взаимодействие хищника с другими сущностями игры, а также запись в логи и базу этого взаимодействия
+     *
+     * @param int $current
+     * @param int $offset
+     * @param EcoCollection $collection
+     * @param LoggerInterface $log
+     * @param GameResult $gameResult
+     * @throws \Exception
+     */
+    public function eat(int $current, int $offset, EcoCollection $collection, LoggerInterface $log, GameResult $gameResult): void
     {
         if ($collection->offsetExists($offset)) {
             if ($collection->offsetGet($offset) instanceof Plant) {
@@ -20,7 +30,7 @@ class HerbivoreService implements AnimalService
                     $collection->offsetGet($offset)->getFields()
                 );
 
-                $response->setFields(
+                $gameResult->setFields(
                     $collection->offsetGet($current)->getName() . ' eat ' . $collection->offsetGet($offset)->getName(),
                     $collection->offsetGet($offset)->getFields()
                 );
