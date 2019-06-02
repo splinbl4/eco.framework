@@ -76,4 +76,13 @@ class Collection implements IteratorAggregate, ArrayAccess, Countable, Collectab
     {
         $this->offsetUnset($offset);
     }
+
+    public function removeValue($value): void
+    {
+        $offset = array_search($value, $this->container, true);
+
+        if ($offset) {
+            $this->offsetUnset($offset);
+        }
+    }
 }

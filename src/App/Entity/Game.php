@@ -74,9 +74,6 @@ class Game
         return $this;
     }
 
-    /**
-     * @return GameResult[]
-     */
     public function getGameResults(): array
     {
         return $this->gameResults->toArray();

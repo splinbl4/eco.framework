@@ -2,17 +2,15 @@
 
 namespace App\Entity;
 
-use App\Service\Observers\ObserverService;
+use App\Entity\Plants\Plants;
 use App\UseCase\Location;
 
 class Observer extends Eco
 {
-    public $observerService;
-
     public function __construct(Location $location)
     {
         parent::__construct($location);
-        $this->observerService = new ObserverService();
+        $this->setId(random_int(1, 10));
     }
 
     private function setId($id)
@@ -26,9 +24,14 @@ class Observer extends Eco
     {
         return array_merge(
             [
-                'id' => $this->setId(random_int(1, 10))
+                'id' => $this->getId()
             ],
             parent::getFields()
         );
+    }
+
+    public function take(Plants $entity): void
+    {
+        $entity->setIsEaten(true);
     }
 }

@@ -12,15 +12,13 @@ abstract class Animal extends Eco
     protected $power;
     protected $minPower;
     protected $maxPower;
-    public $animalService;
 
-    public function __construct(AnimalService $animalService, Location $location, string $name, int $power = null)
+    public function __construct(Location $location, string $name, int $power = null)
     {
         parent::__construct($location);
 
         $this->setName($name);
         $this->setPower($power);
-        $this->animalService = $animalService;
     }
 
     public function getName(): string
@@ -90,5 +88,15 @@ abstract class Animal extends Eco
             ],
             parent::getFields()
         );
+    }
+
+    /**
+     * Съедение сущности игры
+     *
+     * @param Eco $entity
+     */
+    public function eat(Eco $entity): void
+    {
+        $entity->setIsEaten(true);
     }
 }

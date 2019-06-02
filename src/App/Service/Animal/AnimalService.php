@@ -2,20 +2,41 @@
 
 namespace App\Service\Animal;
 
+use App\Entity\Eco;
 use App\Entity\GameResult;
 use App\UseCase\Collection\EcoCollection;
 use Psr\Log\LoggerInterface;
 
-interface AnimalService
+class AnimalService
 {
+    private $logger;
+
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
     /**
-     * Взаимодействие хищника с другими сущностями игры, а также запись в логи и базу этого взаимодействия
+     * Взаимодействие животных с другими сущностями игры, а также запись в логи и базу этого взаимодействия
      *
-     * @param int $current
-     * @param int $offset
-     * @param EcoCollection $collection
-     * @param LoggerInterface $log
+     * @param Eco $currentEntity
+     * @param Eco $entity
      * @param GameResult $gameResult
+     * @param EcoCollection $collection
      */
-    public function eat(int $current, int $offset, EcoCollection $collection, LoggerInterface $log, GameResult $gameResult) :void;
+
+    public function eat(Eco $currentEntity, Eco $entity, GameResult $gameResult, EcoCollection $collection): void
+    {
+        $currentEntity->eat($entity);
+
+        $this->logger->info(
+            $currentEntity->getName() . ' eat ' . $entity->getName(),
+            $entity->getFields()
+        );
+
+        $gameResult->setFields($currentEntity->getName() . ' eat ' . $entity->getName(), $entity->getFields());
+
+        $collection->removeValue($entity);
+    }
+
 }

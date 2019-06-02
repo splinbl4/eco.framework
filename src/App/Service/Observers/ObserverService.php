@@ -2,38 +2,41 @@
 
 namespace App\Service\Observers;
 
+use App\Entity\Eco;
 use App\Entity\GameResult;
 use App\UseCase\Collection\EcoCollection;
 use Psr\Log\LoggerInterface;
 
 class ObserverService
 {
+    private $logger;
+
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
     /**
      * Взаимодействие наблюдателя с растением, а также запись в логи и базу этого взаимодействия
-     *
-     * @param int $current
-     * @param int $offset
-     * @param EcoCollection $collection
-     * @param LoggerInterface $log
+     * @param Eco $currentEntity
+     * @param Eco $entity
      * @param GameResult $gameResult
-     * @throws \Exception
+     * @param EcoCollection $collection
      */
-    public function take(int $current, int $offset, EcoCollection $collection, LoggerInterface $log, GameResult $gameResult): void
+    public function take(Eco $currentEntity, Eco $entity, GameResult $gameResult, EcoCollection $collection): void
     {
-        if (!$collection->offsetExists($offset)) {
-            throw new \Exception('Invalid offset');
-        }
+        $currentEntity->take($entity);
 
-        $log->info(
-            'Observer № ' . $collection->offsetGet($current)->getId() . ' take ' . $collection->offsetGet($offset)->getName(),
-            $collection->offsetGet($offset)->getFields()
+        $this->logger->info(
+            'Observer № ' . $currentEntity->getId() . ' take ' . $entity->getName(),
+            $entity->getFields()
         );
 
         $gameResult->setFields(
-            'Observer № ' . $collection->offsetGet($current)->getId() . ' take ' . $collection->offsetGet($offset)->getName(),
-            $collection->offsetGet($offset)->getFields()
+            'Observer № ' . $currentEntity->getId() . ' take ' . $entity->getName(),
+            $entity->getFields()
         );
 
-        $collection->remove($offset);
+        $collection->removeValue($entity);
     }
 }

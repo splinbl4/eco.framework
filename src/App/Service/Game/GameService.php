@@ -10,7 +10,8 @@ use App\Entity\Game;
 use App\Entity\Observer;
 use App\Entity\GameResult;
 use App\Entity\Plants\Plant;
-use App\UseCase\Collection\Collection;
+use App\Service\Animal\AnimalService;
+use App\Service\Observers\ObserverService;
 use App\UseCase\Collection\EcoCollection;
 use App\UseCase\Location;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,11 +21,15 @@ class GameService
 {
     private $entityManager;
     private $logger;
+    private $animalService;
+    private $observerService;
 
     public function __construct(EntityManagerInterface $entityManager, LoggerInterface $logger)
     {
         $this->entityManager = $entityManager;
         $this->logger = $logger;
+         $this->animalService = new AnimalService($logger);
+        $this->observerService = new ObserverService($logger);
     }
 
     /**
@@ -64,19 +69,19 @@ class GameService
             $gameResult->setGame($game);
 
             foreach ($collection as $current => &$currentEntity) {
-                if ($currentEntity->getIsEaten()) {
-                    continue;
-                }
                 foreach ($collection as $offset => &$entity) {
+                    if ($entity->getIsEaten()) {
+                        continue;
+                    }
                     if ($offset !== $current && $collection->isOverlay($current, $offset)) {
                         if ($currentEntity instanceof Herbivore && $entity instanceof Plant) {
-                            $currentEntity->animalService->eat($current, $offset, $collection, $this->logger, $gameResult);
-                            $collection->add(new Plant($location, '$plants'));
+                            $this->animalService->eat($currentEntity, $entity, $gameResult, $collection);
+                            $collection->add(new Plant($location, 'plants-' . $count));
                         }
 
                         if (($this->isPredator($currentEntity)) && $this->isAnimal($entity)) {
                             if ($currentEntity->isStronger($entity)) {
-                                $currentEntity->animalService->eat($current, $offset, $collection, $this->logger, $gameResult);
+                                $this->animalService->eat($currentEntity, $entity, $gameResult, $collection);
                             }
 
                             if ($currentEntity->isEqual($entity)) {
@@ -86,7 +91,7 @@ class GameService
 
                         if ($currentEntity instanceof Observer) {
                             if ($entity instanceof Plant) {
-                                $currentEntity->observerService->take($current, $offset, $collection, $this->logger, $gameResult);
+                                $this->observerService->take($currentEntity, $entity, $gameResult, $collection);
                             }
 
                             if (!$entity instanceof Observer && !$entity instanceof Plant) {
@@ -139,6 +144,13 @@ class GameService
         return false;
     }
 
+    /**
+     * Сменить координаты сущности игры
+     *
+     * @param $currentEntity
+     * @param $entity
+     * @param GameResult $gameResult
+     */
     private function displacement($currentEntity, $entity, GameResult $gameResult): void
     {
         $currentEntity->ecoService->displacement();

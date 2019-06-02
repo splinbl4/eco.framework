@@ -23,11 +23,11 @@ class EcoCollection extends Collection
     {
         $ecoCollection = new self;
 
-        $ecoCollection->add(new SimplePredator(new PredatorService(), $location, 'simplePredator1'));
-        $ecoCollection->add(new SimplePredator(new PredatorService(), $location, 'simplePredator2'));
-        $ecoCollection->add(new LargePredator(new PredatorService(), $location, 'largePredator'));
-        $ecoCollection->add(new Herbivore(new HerbivoreService(), $location, 'herbivore1'));
-        $ecoCollection->add(new Herbivore(new HerbivoreService(), $location, 'herbivore2'));
+        $ecoCollection->add(new SimplePredator($location, 'simplePredator1'));
+        $ecoCollection->add(new SimplePredator($location, 'simplePredator2'));
+        $ecoCollection->add(new LargePredator($location, 'largePredator'));
+        $ecoCollection->add(new Herbivore($location, 'herbivore1'));
+        $ecoCollection->add(new Herbivore($location, 'herbivore2'));
         $ecoCollection->add(new Plant($location, 'plants'));
         $ecoCollection->add(new Observer($location));
         $ecoCollection->add(new Observer($location));

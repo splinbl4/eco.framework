@@ -22,4 +22,30 @@ class GameReadRepository
     {
         return $this->repository->find($id);
     }
+
+    public function countAll(): int
+    {
+        return $this->repository
+            ->createQueryBuilder('g')
+            ->select('COUNT(g)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * @param int $offset
+     * @param int $limit
+     * @return Game[]
+     */
+    public function all(int $offset, int $limit): array
+    {
+        return $this->repository
+            ->createQueryBuilder('g')
+            ->select('g')
+            ->setFirstResult($offset)
+            ->setMaxResults($limit)
+            ->orderBy('g.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }
